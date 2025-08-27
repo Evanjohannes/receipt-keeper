@@ -1,0 +1,137 @@
+{% extends "receipts/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Spending Reports</h2>
+    <div class="card mb-4">
+    <div class="card-header">
+        <h5>Date Range</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-5">
+                <label class="form-label">From</label>
+                <input type="date" name="start_date" value="{{ start_date }}" 
+                       class="form-control">
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">To</label>
+                <input type="date" name="end_date" value="{{ end_date }}" 
+                       class="form-control">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary">Apply</button>
+            </div>
+        </form>
+    </div>
+</div>
+    <div class="row">
+ 
+        
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Monthly Spending Trend</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="monthlyChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+               <div class="col-md-6">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Weekly Spending Pattern</h5>
+        </div>
+        <div class="card-body">
+            <canvas id="weeklyChart" height="250"></canvas>
+        </div>
+    </div>
+</div>
+
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Spending by Category</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+   
+<div class="mt-4 text-center">
+    <a href="{% url 'export_reports' %}" class="btn btn-success">
+        <i class="bi bi-download"></i> Export Data (CSV)
+    </a>
+</div>
+    </div>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    function safeParse(jsonStr, fallback) {
+        try {
+            return jsonStr ? JSON.parse(jsonStr) : fallback;
+        } catch (e) {
+            console.error("JSON parse error:", e, "Raw:", jsonStr);
+            return fallback;
+        }
+    }
+
+  
+    const weeklyCtx = document.getElementById('weeklyChart');
+    if (weeklyCtx) {
+        new Chart(weeklyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                datasets: [{
+                    label: 'ETB spent',
+                    data: safeParse('{{ weekly_data_json|escapejs }}', [0,0,0,0,0,0,0]),
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                }]
+            }
+        });
+    }
+
+
+    const monthlyCtx = document.getElementById('monthlyChart');
+    if (monthlyCtx) {
+        new Chart(monthlyCtx, {
+            type: 'line',
+            data: {
+                labels: safeParse('{{ monthly_labels_json|escapejs }}', []),
+                datasets: [{
+                    label: 'Monthly Spending',
+                    data: safeParse('{{ monthly_totals_json|escapejs }}', []),
+                    borderColor: 'rgb(75, 192, 192)'
+                }]
+            }
+        });
+    }
+
+  
+    const categoryCtx = document.getElementById('categoryChart');
+    if (categoryCtx) {
+        new Chart(categoryCtx, {
+            type: 'pie',
+            data: {
+                labels: safeParse('{{ category_labels_json|escapejs }}', []),
+                datasets: [{
+                    data: safeParse('{{ category_totals_json|escapejs }}', []),
+                    backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+                        '#9966FF', '#FF9F40', '#8AC24A', '#EA5F89'
+                    ]
+                }]
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

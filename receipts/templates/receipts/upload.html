@@ -1,0 +1,63 @@
+{% extends "receipts/base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2 class="mb-4">Upload Receipt</h2>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="id_image" class="form-label">Receipt Image</label>
+                {{ form.image }}
+                {% if form.image.errors %}
+                    <div class="text-danger">{{ form.image.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_date" class="form-label">Date</label>
+                {{ form.date }}
+                {% if form.date.errors %}
+                    <div class="text-danger">{{ form.date.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_amount" class="form-label">Amount</label>
+                {{ form.amount }}
+                {% if form.amount.errors %}
+                    <div class="text-danger">{{ form.amount.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_category" class="form-label">Category</label>
+                {{ form.category }}
+                {% if form.category.errors %}
+                    <div class="text-danger">{{ form.category.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="id_vendor" class="form-label">Vendor (Optional)</label>
+                {{ form.vendor }}
+                {% if form.vendor.errors %}
+                    <div class="text-danger">{{ form.vendor.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Upload Receipt</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

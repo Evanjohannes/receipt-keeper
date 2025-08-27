@@ -1,0 +1,79 @@
+<div class="card mb-4">
+    <div class="card-header">
+        <h5>Filter Receipts</h5>
+    </div>
+    <div class="card-body">
+        <form method="get" action="{% url 'dashboard' %}">
+            <div class="row g-3">
+                <!-- Search Field -->
+                <div class="col-md-4">
+                    <label for="search" class="form-label">Search Vendor</label>
+                    <input type="text" class="form-control" id="search" name="search" 
+                           value="{{ request.GET.search }}" placeholder="Vendor name...">
+                </div>
+                
+                <!-- Category Filter -->
+                <div class="col-md-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-select" id="category" name="category">
+                        <option value="">All Categories</option>
+                        {% for value, label in category_choices %}
+                            <option value="{{ value }}" {% if request.GET.category == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Date Range -->
+                <div class="col-md-3">
+                    <label for="date_from" class="form-label">From Date</label>
+                    <input type="date" class="form-control" id="date_from" name="date_from" 
+                           value="{{ request.GET.date_from }}">
+                </div>
+                
+                <div class="col-md-2">
+                    <label for="date_to" class="form-label">To Date</label>
+                    <input type="date" class="form-control" id="date_to" name="date_to" 
+                           value="{{ request.GET.date_to }}">
+                </div>
+                
+                <!-- Buttons -->
+                <div class="col-md-12 mt-3">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Reset</a>
+                </div>
+            </div>
+        </form>
+
+        <!-- Active Filters Display -->
+        {% if request.GET %}
+        <div class="active-filters mt-3">
+            <h6>Active Filters:</h6>
+            {% if request.GET.search %}
+                <span class="badge bg-primary filter-badge">
+                    Vendor: "{{ request.GET.search }}"
+                </span>
+            {% endif %}
+            
+            {% if request.GET.category %}
+                <span class="badge bg-primary filter-badge">
+                    Category: {{ view.get_category_display_name }}
+                </span>
+            {% endif %}
+            
+            {% if request.GET.date_from %}
+                <span class="badge bg-primary filter-badge">
+                    From: {{ request.GET.date_from }}
+                </span>
+            {% endif %}
+            
+            {% if request.GET.date_to %}
+                <span class="badge bg-primary filter-badge">
+                    To: {{ request.GET.date_to }}
+                </span>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>

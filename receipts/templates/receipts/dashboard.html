@@ -1,0 +1,112 @@
+{% extends "receipts/base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Dashboard Overview</h2>
+    
+    <div class="row mb-4">
+        
+        <div class="col-md-4">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Spent</h5>
+                    <p class="card-text display-6">
+                        {{ total_spent|default:"0" }} ETB
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Receipts</h5>
+                    <p class="card-text display-6">
+                        {{ receipts|length }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Top Category</h5>
+                    <p class="card-text display-6">
+                        {{ top_category|default:"-" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="my-4">Your Dashboard</h2>
+        {% include "receipts/includes/filters.html" %}
+        
+   
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Your Receipts</h3>
+            <span class="badge bg-primary">{{ receipts.count }} receipt{{ receipts.count|pluralize }}</span>
+        </div>
+
+   
+        <div class="row">
+            {% for receipt in receipts %}
+            <div class="col-md-6 mb-4">
+                <a href="{% url 'receipt_detail' receipt.id %}" class="text-decoration-none">
+                    <div class="card h-100 receipt-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">{{ receipt.vendor|default:"Unknown Vendor" }}</h5>
+                                    <p class="text-muted mb-1">{{ receipt.date|date:"M d, Y" }}</p>
+                                    <span class="badge bg-secondary">{{ receipt.get_category_display }}</span>
+                                </div>
+                                <div class="text-end">
+                                    <h4>{{ receipt.amount }} ETB</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No receipts found. <a href="{% url 'upload' %}">Upload your first receipt</a>!
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+ 
+    .receipt-card {
+        transition: all 0.2s ease;
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .receipt-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        border-color: rgba(0,0,0,0.2);
+    }
+    
+    .dark-mode .receipt-card {
+        border-color: rgba(255,255,255,0.1);
+    }
+    
+    .dark-mode .receipt-card:hover {
+        border-color: rgba(255,255,255,0.3);
+    }
+    
+
+    a.card-link {
+        color: inherit;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}

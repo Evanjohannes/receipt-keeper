@@ -1,0 +1,13 @@
+{% extends "receipts/base.html" %}
+
+{% block content %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">Track Receipts, Save Time on Taxes!</h1>
+    <p class="lead">Upload, organize, and analyze your receipts in one place</p>
+    <hr class="my-4">
+    <div class="d-grid gap-2 col-md-6 mx-auto">
+        <a href="{% url 'signup' %}" class="btn btn-primary btn-lg">Sign Up</a>
+        <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">Login</a>
+    </div>
+</div>
+{% endblock %}

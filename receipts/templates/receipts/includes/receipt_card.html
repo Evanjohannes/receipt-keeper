@@ -1,0 +1,13 @@
+<div class="col-md-4 mb-4">
+    <div class="card">
+        <div class="card-header">
+            <h5>{{ receipt.vendor|default:"Unknown Vendor" }}</h5>
+        </div>
+        <div class="card-body">
+            <img src="{{ receipt.image.url }}" class="img-fluid mb-3" alt="Receipt" style="max-height: 200px;">
+            <p><strong>Amount:</strong> {{ receipt.amount }} ETB</p>
+            <p><strong>Date:</strong> {{ receipt.date|date:"M d, Y" }}</p>
+            <p><strong>Category:</strong> {{ receipt.get_category_display }}</p>
+        </div>
+    </div>
+</div>
